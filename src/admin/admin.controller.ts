@@ -23,6 +23,27 @@ export class AdminController {
   private logger = new Logger('AdminController');
   constructor(private adminService: AdminService) {}
 
+  @Get()
+  @UseGuards(AuthGuard())
+  getAllAdmins(@Req() request: any) {
+    //[v1,v2,v3] are just for debugging purposes
+    if (!request.headers.authorization) {
+      throw new UnauthorizedException('Access denied v1');
+    }
+    const jwtToken = request.headers.authorization;
+    const { role, organization }: JwtPayload = jwt_decode(jwtToken);
+
+    if (!role) {
+      throw new UnauthorizedException('Access denied v2');
+    }
+
+    if (role !== ADMIN_ROLE_ID) {
+      throw new UnauthorizedException('Access denied v3');
+    }
+
+    return this.adminService.getAllAdmins(organization);
+  }
+
   @Post()
   registerAdminWithOrganization(
     @Body(ValidationPipe) registration: OrganizationDto,

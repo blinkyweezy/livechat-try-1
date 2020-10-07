@@ -44,36 +44,6 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async addAgent(
-    authCredentialsDto: AuthCredentialsDto,
-    role: Roles,
-  ): Promise<void> {
-    console.log(authCredentialsDto);
-
-    const { username, password, email } = authCredentialsDto;
-
-    const user = new User();
-    user.username = username;
-    user.email = email;
-    user.salt = await bcrypt.genSalt();
-    user.password = await this.hashPassword(password, user.salt);
-
-    user.role = role;
-
-    try {
-      await user.save();
-    } catch (error) {
-      console.log(error);
-
-      if (error.code === '23505') {
-        // duplicate property
-        throw new ConflictException('Agent with that email already exist.');
-      } else {
-        throw new InternalServerErrorException();
-      }
-    }
-  }
-
   async validateUserPassword(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<JwtPayload> {

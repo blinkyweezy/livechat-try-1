@@ -28,7 +28,24 @@ export class AdminService {
     private organizationRepository: OrganizationRepository,
   ) {}
 
-  async registerAdminWithOrganization(registration: OrganizationDto) {
+  async getAllAdmins(organizationID: number) {
+    const usersForOrganization = await this.userRepository.find({
+      where: {
+        organization: { id: organizationID },
+        role: { id: ADMIN_ROLE_ID },
+      },
+    });
+    usersForOrganization.forEach(user => {
+      delete user.password;
+      delete user.salt;
+    });
+    this.logger.log(usersForOrganization);
+    return usersForOrganization;
+  }
+
+  async registerAdminWithOrganization(
+    registration: OrganizationDto,
+  ): Promise<void> {
     this.logger.verbose(registration);
     const adminRole = await this.rolesRepository.getRole(ADMIN_ROLE_ID);
     const { name, website, phone, email, username, password } = registration;
@@ -61,7 +78,7 @@ export class AdminService {
   async addAdminToOrganization(
     registration: AuthCredentialsDto,
     organizationID: number,
-  ) {
+  ): Promise<void> {
     const adminRole = await this.rolesRepository.getRole(ADMIN_ROLE_ID);
     const { email, username, password } = registration;
 
