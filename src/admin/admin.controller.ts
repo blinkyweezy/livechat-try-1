@@ -23,9 +23,6 @@ export class AdminController {
   private logger = new Logger('AdminController');
   constructor(private adminService: AdminService) {}
 
-  //No Dto for now
-  //No auth guard because it's open
-  //@post to /admin/
   @Post()
   registerAdminWithOrganization(
     @Body(ValidationPipe) registration: OrganizationDto,
