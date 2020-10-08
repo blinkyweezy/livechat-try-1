@@ -6,8 +6,9 @@ import { TestModule } from './test/test.module';
 import { AdminModule } from './admin/admin.module';
 import { AgentModule } from './agent/agent.module';
 import { OrganizationModule } from './organization/organization.module';
+import { SuperuserModule } from './superuser/superuser.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), AuthModule, TestModule, AdminModule, AgentModule, OrganizationModule],
+  imports: [TypeOrmModule.forRoot(typeOrmConfig), AuthModule, TestModule, AdminModule, AgentModule, OrganizationModule, SuperuserModule],
 })
 export class AppModule {}

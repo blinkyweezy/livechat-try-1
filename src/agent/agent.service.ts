@@ -29,7 +29,11 @@ export class AgentService {
     private organizationRepository: OrganizationRepository,
   ) {}
 
-  async getAllAgents(organizationID: number) {
+  /**
+   * Get all agents belonging to organization. Requires at least one level of authorization
+   * @param organizationID The organizationId where the agents belong to
+   */
+  async getAllAgents(organizationID: number): Promise<Array<User>> {
     const usersForOrganization = await this.userRepository.find({
       where: {
         organization: { id: organizationID },
@@ -44,6 +48,11 @@ export class AgentService {
     return usersForOrganization;
   }
 
+  /**
+   * Add an agent to an organization. This will sign up the user with role as agent under the organization
+   * @param registration Auth Credentials required for registering a user: [username, password, email, etc]
+   * @param organizationID The organization to register the user to
+   */
   async addAgentToOrganization(
     registration: AuthCredentialsDto,
     organizationID: number,
@@ -56,7 +65,12 @@ export class AgentService {
     return this.userRepository.signUp(registration, actualRole, organization);
   }
 
-  async promoteAgent(id: number, role: number) {
+  /**
+   * Promote/Demote agent depending on the role passed
+   * @param id The agent's db id: gotten from http request
+   * @param role The new role for the agent
+   */
+  async promoteAgent(id: number, role: number): Promise<void> {
     const agent = await this.userRepository.findOne(id, {
       relations: ['role'],
     });

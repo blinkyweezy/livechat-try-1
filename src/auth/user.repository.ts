@@ -39,7 +39,7 @@ export class UserRepository extends Repository<User> {
         // duplicate property
         throw new ConflictException('User with that email already exist');
       } else {
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException(error);
       }
     }
   }
